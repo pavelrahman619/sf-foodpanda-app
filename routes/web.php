@@ -14,9 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+use App\Http\Controllers\AutoLoginController; // Added for auto-login
+use App\Http\Middleware\AttemptLoginViaSharedToken; // Added for auto-login middleware
+
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Auto-login route that uses the shared token
+Route::get('/auto-login', [AutoLoginController::class, 'performAutoLogin'])
+    ->middleware(AttemptLoginViaSharedToken::class) // Apply the token processing middleware first
+    ->name('shared.autologin'); // Give it a name for easier reference
 
 Route::get('/dashboard', function () {
     return view('dashboard');

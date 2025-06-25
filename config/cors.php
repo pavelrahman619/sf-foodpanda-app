@@ -15,11 +15,15 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', '/auto-login'], // Added /auto-login for the token login route
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+
+    'allowed_origins' => [
+        env('FOODPANDA_APP_URL', 'http://sf-foodpanda-app.test'), // Allow foodpanda-app
+        env('ECOMMERCE_APP_URL', 'http://sf-ecommerce-app.test'), // Allow self for SPA-like behavior if any
+    ],
 
     'allowed_origins_patterns' => [],
 
@@ -29,6 +33,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true, // Required for Sanctum cookie-based auth & cross-domain requests
 
 ];
