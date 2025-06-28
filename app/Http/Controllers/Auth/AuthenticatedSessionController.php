@@ -43,6 +43,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        // Redirect to ecommerce-app's shared logout endpoint to complete the SLO chain.
+        $ecommerceAppUrl = rtrim(env('ECOMMERCE_APP_URL', 'http://ecommerce.localhost'), '/');
+        // Pass our login page as the 'final' redirect, so ecommerce-app's shared logout knows where to send the user
+        $logoutChainUrl = $ecommerceAppUrl . '/shared-logout'; 
+        // If we wanted ecommerce-app to redirect back to foodpanda's login:
+        // $finalRedirectUrl = route('login'); // foodpanda's login
+        // $logoutChainUrl = $ecommerceAppUrl . '/shared-logout?redirect_after_ecommerce_logout=' . urlencode($finalRedirectUrl);
+
+
+        \Illuminate\Support\Facades\Log::info('foodpanda-app: Logging out locally and redirecting to ecommerce-app for SLO: ' . $logoutChainUrl);
+
+        return redirect()->away($logoutChainUrl);
     }
 }
